@@ -1,0 +1,19 @@
+# Data directories
+data/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Large directories or temp files
+reports/
+
+# Project structure file
+project_structure.txt
