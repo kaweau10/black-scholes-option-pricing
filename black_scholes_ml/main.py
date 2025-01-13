@@ -1,38 +1,44 @@
-from src.models.random_forest import (
-    load_combined_data,
-    preprocess_and_split_data,
-    train_random_forest,
-    evaluate_model,
-    save_model,
-)
+import os
+import pandas as pd
+from src.data.fetch_data import fetch_stock_data, fetch_options_data
+from src.data.preprocess_data import process_and_save_data
+
+def load_tickers(file_path):
+    """Load tickers from a structured text file."""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Ticker file not found at {file_path}")
+    tickers_data = pd.read_csv(file_path, sep="|")
+    tickers = tickers_data["Symbol"].tolist()
+    return tickers
+
+def collect_data(tickers, start_date, end_date, expiration):
+    """Fetch, preprocess, and save data for all tickers."""
+    for ticker in tickers:
+        print(f"Processing data for {ticker}...")
+        try:
+            process_and_save_data(ticker, start_date, end_date, expiration)
+        except Exception as e:
+            print(f"Error processing data for {ticker}: {e}")
 
 def main():
-    # Load combined processed data
-    print("Loading combined processed data...")
-    data = load_combined_data()
+    root_dir = "black_scholes_ml"
 
-    # Define features and target
-    features = ['log_moneyness', 'log_time_to_maturity', 'boxcox_iv_proxy']
-    target = 'boxcox_lastPrice'
+    # File paths
+    tickers_file = os.path.join(root_dir, "data", "raw", "tickers.txt")
 
-    # Split data into training and testing sets
-    print("Splitting data into train and test sets...")
-    X_train, X_test, y_train, y_test = preprocess_and_split_data(data, features, target)
+    # Load tickers
+    print("Loading tickers...")
+    tickers = load_tickers(tickers_file)
 
-    # Train Random Forest model
-    print("Training Random Forest model...")
-    model = train_random_forest(X_train, y_train)
+    # Define date range and expiration
+    start_date = "2024-01-01"
+    end_date = "2024-12-31"
+    expiration = "2024-12-20"
 
-    # Evaluate the model
-    print("Evaluating the model...")
-    mse, r2 = evaluate_model(model, X_test, y_test)
-    print(f"Random Forest Mean Squared Error: {mse}")
-    print(f"Random Forest R2 Score: {r2}")
-
-    # Save the model
-    print("Saving the model...")
-    model_path = save_model(model)
-    print(f"Model saved at {model_path}")
+    # Collect and process data
+    print("Starting data collection...")
+    collect_data(tickers, start_date, end_date, expiration)
+    print("Data collection complete.")
 
 if __name__ == "__main__":
     main()
