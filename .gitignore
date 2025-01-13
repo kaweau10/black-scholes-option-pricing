@@ -1,5 +1,5 @@
 # Data directories
-data/
+black_scholes_ml/data/
 
 # Python cache
 __pycache__/
