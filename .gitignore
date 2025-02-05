@@ -18,5 +18,6 @@ reports/
 # Project structure file
 project_structure.txt
 
-# Main file
+# Testing files
 main.py
+tests/

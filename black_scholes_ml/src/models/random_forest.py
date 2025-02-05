@@ -5,7 +5,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 import joblib
 
-MODEL_DIR = os.path.join(os.getcwd(), "black_scholes_ml", "models")
+MODEL_DIR = os.path.join(os.getcwd(), "models")
+EVALUATION_DIR = os.path.join(os.getcwd(), "reports", "model_evaluations")
 
 def load_combined_data():
     """Load the combined processed data."""
@@ -21,17 +22,17 @@ def preprocess_and_split_data(data, features, target):
     y = data[target]
     return X, y
 
-def train_random_forest(X_train, y_train):
-    """Train a Random Forest model."""
-    model = RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42)
-    model.fit(X_train, y_train)
-    return model
-
 def evaluate_model_with_cv(model, X, y):
     """Evaluate the model using cross-validation."""
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
     mse_scores = -cross_val_score(model, X, y, scoring='neg_mean_squared_error', cv=cv)
     r2_scores = cross_val_score(model, X, y, scoring='r2', cv=cv)
+    os.makedirs(EVALUATION_DIR, exist_ok=True)
+    file_path = os.path.join(EVALUATION_DIR, "random_forest_report.txt")
+    with open(file_path, "w") as file:
+        file.write(f"Cross-Validation Mean Squared Error: {mse_scores.mean()} \u00b1 {mse_scores.std()}\n")
+        file.write(f"Cross-Validation R^2 Score: {r2_scores.mean()} \u00b1 {r2_scores.std()}\n")
+    print(f"Saved values to {file_path}")
     return mse_scores, r2_scores
 
 def save_model(model, model_name="random_forest"):
