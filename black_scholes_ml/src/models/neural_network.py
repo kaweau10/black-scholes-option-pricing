@@ -14,7 +14,7 @@ import joblib
 
 # Directories for saving models and reports
 MODEL_DIR = os.path.join(os.getcwd(), "models", "neural_network")
-EVALUATION_DIR = os.path.join(os.getcwd(), "reports", "model_evaluations")
+EVALUATION_DIR = os.path.join(os.getcwd(), "reports", "model_evaluations", "temp")
 os.makedirs(MODEL_DIR, exist_ok=True)
 os.makedirs(EVALUATION_DIR, exist_ok=True)
 

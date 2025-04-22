@@ -21,3 +21,6 @@ project_structure.txt
 # Testing files
 main.py
 tests/
+
+black_scholes_ml/models/neural_network_tuning/
+black_scholes_ml/models/neural_network/neural_network_tuning/
